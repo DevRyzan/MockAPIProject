@@ -1,5 +1,7 @@
 ﻿
 using Application.Features.MockAPIModels.Dtos;
+using Application.Features.MockAPIModels.Rules;
+using Application.Services.Repositories;
 using AutoMapper;
 using MediatR;
 using System.Drawing;
@@ -11,18 +13,24 @@ namespace Application.Features.MockAPIModels.Commands.Create
         public string Name { get; set; }
 
 
-        public class CreateMockAPIModelCommandHandler : IRequest<CreateMockAPIModelCommand, CreateMockAPIModelDto>
+        public class CreateMockAPIModelCommandHandler : IRequestHandler<CreateMockAPIModelCommand, CreateMockAPIModelDto>
         {
-            private readonly IBrandRepository _brandRepository;
+            private readonly IMockAPIModelRepository _mockAPIModelRepository;
             private readonly IMapper _mapper;
-            private readonly BrandBusinessRules _brandBusinessRules;
+            private readonly MockAPIModelBusinessRules _brandBusinessRules;
 
-            public CreateMockAPIModelCommandHandler()
+            public CreateMockAPIModelCommandHandler(IMockAPIModelRepository mockAPIModelRepository,IMapper mapper,MockAPIModelBusinessRules mockAPIModelBusinessRules)
             {
-                
+                _mockAPIModelRepository = mockAPIModelRepository;
+                _mapper = mapper;
+                _brandBusinessRules = mockAPIModelBusinessRules;
             }
 
+            public async Task<CreateMockAPIModelDto> Handle(CreateMockAPIModelCommand request, CancellationToken cancellationToken)
+            {
+               
 
+            }
         }
     }
 }
