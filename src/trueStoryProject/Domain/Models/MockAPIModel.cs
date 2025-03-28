@@ -1,10 +1,22 @@
-﻿namespace Domain.Models;
+﻿using Core.Persistence.Repositories;
 
-public class MockAPIModel
+namespace Domain.Models;
+
+public class MockAPIModel:Entity
 {
-    public int Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public string Author { get; set; }
+
+    public MockAPIModel()
+    {
+        
+    }
+    public MockAPIModel(int id,string name,string author)
+    {
+        Id=id;
+        Name=name;
+        Author=author;
+    }
 
 }
