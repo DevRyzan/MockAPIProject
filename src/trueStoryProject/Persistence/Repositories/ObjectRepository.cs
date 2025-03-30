@@ -1,6 +1,8 @@
 ﻿using Application.Services.Repositories;
+using Core.Persistence.Paging;
 using Domain;
 using Microsoft.Extensions.Options;
+using System.Linq.Dynamic.Core;
 using System.Text;
 namespace Persistence.Repositories;
 
@@ -48,4 +50,44 @@ public class ObjectRepository : IObjectRepository
 
         return await response.Content.ReadAsStringAsync();
     }
+
+    public async Task<IPaginate<Domain.Models.Object>> GetListAsync(
+    string? nameFilter = null,
+    int index = 0,
+    int size = 10,
+    CancellationToken cancellationToken = default)
+    {
+        var requestUri = $"{_urlSetting.BaseUrl}objects?name={nameFilter}&page={index}&pageSize={size}";
+
+        if (!string.IsNullOrEmpty(nameFilter))
+        {
+            requestUri += $"&name={Uri.EscapeDataString(nameFilter)}";
+        }
+
+        var response = await _client.GetAsync(requestUri, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"API Error: {response.StatusCode}");
+        }
+
+        var jsonResponse = await response.Content.ReadAsStringAsync();
+        var result = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Domain.Models.Object>>(jsonResponse);
+
+        if (result == null || !result.Any())
+        {
+            return Paginate.Empty<Domain.Models.Object>();
+        }
+
+        var totalCount = result.Count;
+        var paginatedItems = result.Skip(index * size).Take(size).ToList();
+        var totalPages = (int)Math.Ceiling((double)totalCount / size);
+
+        return new Paginate<Domain.Models.Object>(paginatedItems, index, size, 0)
+        {
+            Count = totalCount,
+            Pages = totalPages
+        };
+    }
+
 }
