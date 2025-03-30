@@ -7,19 +7,19 @@ namespace Application.Services.MockAPIModelService;
 public class ObjectManager : IObjectService
 {
     private readonly IObjectRepository  _objectRepository;
-    private readonly ObjectBusinessRules _mockAPIModelBusinessRules;
+    private readonly ObjectBusinessRules _objectBusinessRules;
     public ObjectManager(IObjectRepository  objectRepository, ObjectBusinessRules objectBusinessRules)
     {
         _objectRepository = objectRepository;
-        _mockAPIModelBusinessRules = objectBusinessRules;
+        _objectBusinessRules = objectBusinessRules;
     }
-    public async Task<string> CreateObject(Domain.Models.Object mockAPIModel)
+    public async Task<string> CreateObject(Domain.Models.Object objectModel)
     {
         try
         { 
-           // await _mockAPIModelBusinessRules.CheckIfObjectNameIsValid(mockAPIModel.Name);
+           await _objectBusinessRules.ObjectShouldBeNotExists(objectModel);
 
-            var newObject = await _objectRepository.CreateObjectModel(mockAPIModel);
+            var newObject = await _objectRepository.CreateObjectModel(objectModel);
             return newObject;
         }
         catch (Exception ex)
@@ -31,7 +31,9 @@ public class ObjectManager : IObjectService
     {
         try
         {
-            var deletedObject = await _objectRepository.DeleteObjectModel(objectId);
+            await _objectBusinessRules.ObjectShouldBeExistsById(objectId:objectId);
+
+            var deletedObject = await _objectRepository.DeleteObjectModel(objectId:objectId);
             return deletedObject;
         }
         catch (Exception ex)

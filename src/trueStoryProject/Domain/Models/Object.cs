@@ -19,7 +19,7 @@ public class Object:Entity
     {
         
     }
-    public Object(int id,string name)
+    public Object(string id,string name)
     {
         Id=id;
         Name=name; 
