@@ -1,5 +1,7 @@
 ﻿using Application.Features.MockAPIModels.Commands.Create;
 using Application.Features.ObjectModels.Commands.Delete;
+using Application.Features.ObjectModels.Queries;
+using Core.Application.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -49,5 +51,20 @@ public class ObjectController : BaseController
             return StatusCode(500, $"Internal Server Error: {ex.Message}");
         }
     }
+    [HttpGet]
+    public async Task<IActionResult> GetObjectsByName([FromQuery] string name, [FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10)
+    {
+        var query = new GetObjectByNameQuery
+        {
+            Name = name,
+            PageRequest = new PageRequest
+            { 
+                Page = pageIndex,
+                PageSize = pageSize
+            }
+        };
 
+        var result = await Mediator.Send(query);
+        return Ok(result);
+    }
 }

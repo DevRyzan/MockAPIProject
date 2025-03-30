@@ -1,16 +1,17 @@
 ﻿using Application.Features.MockAPIModels.Rules;
-using Application.Services.Repositories; 
+using Application.Services.Repositories;
+using Core.Persistence.Paging;
 
 namespace Application.Services.MockAPIModelService;
 
 public class ObjectManager : IObjectService
 {
-    private readonly IObjectRepository  _mockAPIModelRepository;
+    private readonly IObjectRepository  _objectRepository;
     private readonly ObjectBusinessRules _mockAPIModelBusinessRules;
-    public ObjectManager(IObjectRepository  mockAPIModelRepository, ObjectBusinessRules mockAPIModelBusinessRules)
+    public ObjectManager(IObjectRepository  objectRepository, ObjectBusinessRules objectBusinessRules)
     {
-        _mockAPIModelRepository = mockAPIModelRepository;
-        _mockAPIModelBusinessRules = mockAPIModelBusinessRules;
+        _objectRepository = objectRepository;
+        _mockAPIModelBusinessRules = objectBusinessRules;
     }
     public async Task<string> CreateObject(Domain.Models.Object mockAPIModel)
     {
@@ -18,7 +19,7 @@ public class ObjectManager : IObjectService
         { 
            // await _mockAPIModelBusinessRules.CheckIfObjectNameIsValid(mockAPIModel.Name);
 
-            var newObject = await _mockAPIModelRepository.CreateObjectModel(mockAPIModel);
+            var newObject = await _objectRepository.CreateObjectModel(mockAPIModel);
             return newObject;
         }
         catch (Exception ex)
@@ -30,7 +31,7 @@ public class ObjectManager : IObjectService
     {
         try
         {
-            var deletedObject = await _mockAPIModelRepository.DeleteObjectModel(objectId);
+            var deletedObject = await _objectRepository.DeleteObjectModel(objectId);
             return deletedObject;
         }
         catch (Exception ex)
@@ -38,4 +39,27 @@ public class ObjectManager : IObjectService
             throw new Exception("Error occurred while deleting object.", ex);
         }
     }
+    public async Task<IPaginate<Domain.Models.Object>> GetObjectListAsync(
+    string? nameFilter = null,
+    int index = 0,
+    int size = 10,
+    CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var objectList = await _objectRepository.GetListAsync(nameFilter, index, size, cancellationToken);
+
+            if (objectList == null || !objectList.Items.Any())
+            {
+                throw new Exception("No objects found.");
+            }
+
+            return objectList;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error occurred while fetching object list.", ex);
+        }
+    }
+
 }

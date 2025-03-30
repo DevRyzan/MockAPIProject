@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Features\ObjectModels\Constants\" />
-    <Folder Include="Features\ObjectModels\Queries\" />
   </ItemGroup>
 
   <ItemGroup>
