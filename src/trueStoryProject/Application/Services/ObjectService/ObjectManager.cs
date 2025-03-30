@@ -1,9 +1,13 @@
 ﻿using Application.Features.MockAPIModels.Rules;
+using Application.Features.ObjectModels.Constants;
 using Application.Services.Repositories;
+using Core.CrossCuttingConcerns.Exceptions;
 using Core.Persistence.Paging;
 
 namespace Application.Services.MockAPIModelService;
-
+/// <summary>
+/// The Service Layer works directly with the Repository and Rule layers, the layer where all business blocks are managed.
+/// </summary>
 public class ObjectManager : IObjectService
 {
     private readonly IObjectRepository  _objectRepository;
@@ -24,7 +28,7 @@ public class ObjectManager : IObjectService
         }
         catch (Exception ex)
         { 
-            throw new Exception("Error occurred while creating object.", ex);
+            throw new BusinessException(ObjectModelMessages.ErrorOccurredWhileCreatingObject);
         }
     }
     public async Task<string> DeleteObject(string objectId)
@@ -38,7 +42,7 @@ public class ObjectManager : IObjectService
         }
         catch (Exception ex)
         {
-            throw new Exception("Error occurred while deleting object.", ex);
+            throw new BusinessException(ObjectModelMessages.ErrorOccurredWhileDeletingObject);
         }
     }
     public async Task<IPaginate<Domain.Models.Object>> GetObjectListAsync(
@@ -51,16 +55,16 @@ public class ObjectManager : IObjectService
         {
             var objectList = await _objectRepository.GetListAsync(nameFilter, index, size, cancellationToken);
 
+            //BusinessRule Call
             if (objectList == null || !objectList.Items.Any())
-            {
-                throw new Exception("No objects found.");
-            }
+                throw new BusinessException(ObjectModelMessages.ObjectNotExists);
+            
 
             return objectList;
         }
         catch (Exception ex)
         {
-            throw new Exception("Error occurred while fetching object list.", ex);
+            throw new BusinessException(ObjectModelMessages.ErrorOccurredWhileFetchingObjectList);
         }
     }
 

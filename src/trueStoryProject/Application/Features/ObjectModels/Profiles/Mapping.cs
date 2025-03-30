@@ -4,6 +4,9 @@ using AutoMapper;
 using Core.Persistence.Paging;
 
 namespace Application.Features.ObjectModels.Profiles;
+/// <summary>
+/// Mapping Class for AutoMapper
+/// </summary>
 public class Mapping : Profile
 {
     public Mapping()

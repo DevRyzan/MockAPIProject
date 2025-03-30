@@ -1,4 +1,6 @@
-﻿using Application.Services.Repositories;
+﻿using Application.Features.ObjectModels.Constants;
+using Application.Services.Repositories;
+using Core.CrossCuttingConcerns.Exceptions;
 
 namespace Application.Features.MockAPIModels.Rules;
 
@@ -19,13 +21,13 @@ public class ObjectBusinessRules
     public async Task ObjectShouldBeNotExists(Domain.Models.Object objectModel)
     {
         if (string.IsNullOrEmpty(objectModel.Name))
-            throw new Exception("Object name cannot be empty.");
+            throw new BusinessException(ObjectModelMessages.ObjectNameCannotBeEmpty);
 
         //The query should work with by Name property.
         var allObjects = await _objectRepository.GetAllObjectsAsync();
         
         if (allObjects.Any(obj => obj.Name.Equals(objectModel.Name, StringComparison.OrdinalIgnoreCase)))
-            throw new Exception("Object with this name already exists.");
+            throw new BusinessException(ObjectModelMessages.ObjectWithThisNameAlreadyExists);
     }
     /// <summary>
     /// Check if there is any data with this Object ID in the list
@@ -37,7 +39,7 @@ public class ObjectBusinessRules
     {
         var objectModel = await _objectRepository.GetObjectByIdAsync(objectId:objectId);
         if (objectModel == null)
-            throw new Exception("Object Not Exists.");
+            throw new BusinessException(ObjectModelMessages.ObjectNotExists);
         
          
     }
