@@ -1,9 +1,11 @@
-﻿namespace Application.Features.MockAPIModels.Dtos;
+﻿using System.Text.Json.Serialization;
+
+namespace Application.Features.MockAPIModels.Dtos;
 
 public class CreateObjectDto
 {
-    public int Id { get; set; }
     public string Name { get; set; }
-    public string Description { get; set; }
-    public string Author { get; set; }
+
+    [JsonPropertyName("Data")]
+    public Dictionary<string, object> Data { get; set; }
 }
