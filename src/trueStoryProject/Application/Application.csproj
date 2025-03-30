@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\MockAPIModels\Constants\" />
-    <Folder Include="Features\MockAPIModels\Queries\" />
-    <Folder Include="Features\MockAPIModels\Profiles\" />
+    <Folder Include="Features\ObjectModels\Constants\" />
+    <Folder Include="Features\ObjectModels\Queries\" />
+    <Folder Include="Features\ObjectModels\Profiles\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,6 +18,8 @@
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="RestSharp" Version="112.1.0" />
+	<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+
   </ItemGroup>
 
   <ItemGroup>
