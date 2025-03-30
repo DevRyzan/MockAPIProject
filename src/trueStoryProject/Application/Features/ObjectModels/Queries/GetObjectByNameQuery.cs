@@ -29,12 +29,6 @@ public class GetObjectByNameQuery:IRequest<ObjectListModel>
 
         public async Task<ObjectListModel> Handle(GetObjectByNameQuery request, CancellationToken cancellationToken)
         {
-            //var objectList = await _objectService.GetObjectListAsync(
-            //    nameFilter: request.Name,
-            //    index: request.PageRequest.Page,
-            //    size: request.PageRequest.PageSize,
-            //    cancellationToken: cancellationToken
-            //);
 
             IPaginate<Domain.Models.Object> listObject = await _objectService.GetObjectListAsync(
                 nameFilter: request.Name,

@@ -2,6 +2,7 @@
 using Core.Persistence.Paging;
 using Domain;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System.Linq.Dynamic.Core;
 using System.Text;
 namespace Persistence.Repositories;
@@ -16,11 +17,9 @@ public class ObjectRepository : IObjectRepository
     public ObjectRepository(HttpClient client, IOptions<UrlSetting> urlSetting)
     {
         _client = client;
-        _urlSetting = urlSetting.Value ?? throw new ArgumentNullException(nameof(urlSetting), "UrlSetting cannot be null.");
+        _urlSetting = urlSetting.Value ?? throw new ArgumentNullException(nameof(urlSetting), "UrlSetting cant be null.");
     }
-
-
-
+     
     public async Task<string> CreateObjectModel(Domain.Models.Object mockAPIModel)
     {
         var json = Newtonsoft.Json.JsonConvert.SerializeObject(mockAPIModel);
@@ -90,4 +89,51 @@ public class ObjectRepository : IObjectRepository
         };
     }
 
+
+    public async Task<List<Domain.Models.Object>> GetAllObjectsAsync(CancellationToken cancellationToken = default)
+    {
+        var requestUri = $"{_urlSetting.BaseUrl}objects";
+
+        var response = await _client.GetAsync(requestUri, cancellationToken);
+
+        //BusinessRule call
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"API Error: {response.StatusCode}");
+        }
+
+        var jsonResponse = await response.Content.ReadAsStringAsync();
+        var result = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Domain.Models.Object>>(jsonResponse);
+
+        return result ?? new List<Domain.Models.Object>();
+    }
+    public async Task<Domain.Models.Object> GetObjectByIdAsync(string objectId, CancellationToken cancellationToken = default)
+    {
+        var requestUri = $"{_urlSetting.BaseUrl}objects/{objectId}";
+
+        var response = await _client.GetAsync(requestUri, cancellationToken);
+        //Check API 
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"API Error: {response.StatusCode}");
+
+
+        //Try Deserialize
+        var jsonResponse = await response.Content.ReadAsStringAsync();
+
+        //Console.WriteLine("JSON Response: " + jsonResponse);
+
+        try
+        {
+            var result = Newtonsoft.Json.JsonConvert.DeserializeObject<Domain.Models.Object>(jsonResponse);
+
+             if (result == null)
+                throw new Exception($"Object with ID {objectId} not found.");
+
+            return result;
+        }
+        catch (JsonException ex)
+        {
+             throw new Exception($"Error deserializing response: {ex.Message}", ex);
+        }
+    }
 }

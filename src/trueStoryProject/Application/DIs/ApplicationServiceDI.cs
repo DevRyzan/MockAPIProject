@@ -7,7 +7,9 @@ using FluentValidation;
 using Application.Features.MockAPIModels.Rules;
 
 namespace Application.DIs;
-
+/// <summary>
+/// All classes derived from the Application Layer are implemented as class
+/// </summary>
 public static class ApplicationServiceDI
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
@@ -17,8 +19,7 @@ public static class ApplicationServiceDI
         services.AddMediatR(Assembly.GetExecutingAssembly());
 
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
-        //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+         
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
 
         services.AddScoped<IObjectService, ObjectManager>();
