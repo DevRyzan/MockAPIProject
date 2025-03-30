@@ -10,7 +10,7 @@ public static class PersistenceServiceDIs
                                                            IConfiguration configuration)
     {
         
-        services.AddScoped<IObjectRepository<Domain.Models.Object>, ObjectRepository>();
+        services.AddScoped<IObjectRepository,ObjectRepository>();
         return services;
     }
 }

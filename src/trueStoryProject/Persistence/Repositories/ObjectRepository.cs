@@ -4,7 +4,7 @@ using RestSharp;
 
 namespace Persistence.Repositories;
 
-public class ObjectRepository : IObjectRepository<Domain.Models.Object>
+public class ObjectRepository : IObjectRepository 
 {
     private readonly RestClient _client;
     public ObjectRepository()
