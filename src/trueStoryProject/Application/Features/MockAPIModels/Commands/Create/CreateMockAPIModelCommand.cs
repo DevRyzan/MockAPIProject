@@ -1,36 +1,47 @@
-﻿
-using Application.Features.MockAPIModels.Dtos;
+﻿using Application.Features.MockAPIModels.Dtos;
 using Application.Features.MockAPIModels.Rules;
+using Application.Services.MockAPIModelService;
 using Application.Services.Repositories;
 using AutoMapper;
+using Domain.Models;
 using MediatR;
-using System.Drawing;
 
-namespace Application.Features.MockAPIModels.Commands.Create
+
+namespace Application.Features.MockAPIModels.Commands.Create;            
+
+public partial class CreateMockAPIModelCommand:IRequest<CreateMockAPIModelDto>
 {
-    public partial class CreateMockAPIModelCommand:IRequest<CreateMockAPIModelDto>
+    public CreateMockAPIModelDto CreateMockAPIModelDto { get; set; }
+
+
+    public class CreateMockAPIModelCommandHandler : IRequestHandler<CreateMockAPIModelCommand, CreateMockAPIModelDto>
     {
-        public string Name { get; set; }
+        private readonly IMockAPIModelRepository _mockAPIModelRepository;
+        private readonly IMockAPIService _mockAPIService;
+        private readonly IMapper _mapper;
+        private readonly MockAPIModelBusinessRules _brandBusinessRules;
 
-
-        public class CreateMockAPIModelCommandHandler : IRequestHandler<CreateMockAPIModelCommand, CreateMockAPIModelDto>
+        public CreateMockAPIModelCommandHandler(IMockAPIModelRepository mockAPIModelRepository,IMockAPIService 
+            mockAPIService,IMapper mapper,MockAPIModelBusinessRules mockAPIModelBusinessRules)
         {
-            private readonly IMockAPIModelRepository _mockAPIModelRepository;
-            private readonly IMapper _mapper;
-            private readonly MockAPIModelBusinessRules _brandBusinessRules;
+            _mockAPIModelRepository = mockAPIModelRepository;
+            _mockAPIService = mockAPIService;
+            _mapper = mapper;
+            _brandBusinessRules = mockAPIModelBusinessRules;
+        }
 
-            public CreateMockAPIModelCommandHandler(IMockAPIModelRepository mockAPIModelRepository,IMapper mapper,MockAPIModelBusinessRules mockAPIModelBusinessRules)
+        public async Task<CreateMockAPIModelDto> Handle(CreateMockAPIModelCommand request, CancellationToken cancellationToken)
+        {
+            MockAPIModel newMockAPIModel = new()
             {
-                _mockAPIModelRepository = mockAPIModelRepository;
-                _mapper = mapper;
-                _brandBusinessRules = mockAPIModelBusinessRules;
-            }
+                Name = request.CreateMockAPIModelDto.Name,
+                Description = request.CreateMockAPIModelDto.Description,
+                Author = request.CreateMockAPIModelDto.Author,
+            };
 
-            public async Task<CreateMockAPIModelDto> Handle(CreateMockAPIModelCommand request, CancellationToken cancellationToken)
-            {
-               
+            _mockAPIService.CreateMockAPIModel(newMockAPIModel);
 
-            }
+
         }
     }
 }
