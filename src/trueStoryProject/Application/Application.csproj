@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Features\ObjectModels\Constants\" />
     <Folder Include="Features\ObjectModels\Queries\" />
-    <Folder Include="Features\ObjectModels\Profiles\" />
   </ItemGroup>
 
   <ItemGroup>

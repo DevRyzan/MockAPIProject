@@ -1,6 +1,5 @@
 ﻿using Application.Features.MockAPIModels.Rules;
-using Application.Services.Repositories;
-using Domain.Models;
+using Application.Services.Repositories; 
 
 namespace Application.Services.MockAPIModelService;
 
@@ -15,9 +14,16 @@ public class ObjectManager : IObjectService
     }
     public async Task<string> CreateObject(Domain.Models.Object mockAPIModel)
     {
+        try
+        { 
+           // await _mockAPIModelBusinessRules.CheckIfObjectNameIsValid(mockAPIModel.Name);
 
-        string newObject = await _mockAPIModelRepository.CreateMockAPIModel (mockAPIModel);
-
-        return newObject;
+            var newObject = await _mockAPIModelRepository.CreateObjectModel(mockAPIModel);
+            return newObject;
+        }
+        catch (Exception ex)
+        { 
+            throw new Exception("Error occurred while creating object.", ex);
+        }
     }
 }

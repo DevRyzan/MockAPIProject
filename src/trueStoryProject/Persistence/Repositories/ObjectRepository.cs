@@ -1,28 +1,30 @@
 ﻿using Application.Services.Repositories;
-using Domain.Models;
-using RestSharp;
-
+using System.Text;
 namespace Persistence.Repositories;
 
-public class ObjectRepository : IObjectRepository 
+/// <summary>
+/// This repository behaves as if it is connected to the Database.
+/// </summary>
+public class ObjectRepository : IObjectRepository
 {
-    private readonly RestClient _client;
+    private readonly HttpClient _client;
+
     public ObjectRepository()
     {
-        _client = new RestClient("https://restful-api.dev/");
+        _client = new HttpClient();
     }
-    public async Task<string> CreateMockAPIModel(Domain.Models.Object mockAPIModel)
+     
+    public async Task<string> CreateObjectModel(Domain.Models.Object mockAPIModel)
     {
-        var request = new RestRequest("objects", Method.Post);
-        request.AddJsonBody(mockAPIModel);
+        var json = Newtonsoft.Json.JsonConvert.SerializeObject(mockAPIModel);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await _client.ExecuteAsync(request);
+        var response = await _client.PostAsync("https://api.restful-api.dev/objects", content);
 
-        if (!response.IsSuccessful)
-        {
+        if (!response.IsSuccessStatusCode)
             throw new Exception($"API Error: {response.StatusCode}");
-        }
+        
 
-        return response.Content;
-    } 
+        return await response.Content.ReadAsStringAsync();
+    }
 }
