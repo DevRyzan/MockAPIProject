@@ -2,12 +2,27 @@ using Microsoft.AspNetCore.Identity;
 using Application.DIs;
 using Microsoft.OpenApi.Models;
 using Persistence;
+using Application.Services.Repositories;
+using Persistence.Repositories;
+using Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+
+
+builder.Services.Configure<UrlSetting>(builder.Configuration.GetSection("ApiSettings"));
+
+builder.Services.AddHttpClient<IObjectRepository, ObjectRepository>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ApiSettings:BaseUrl"));
+});
+
+
+
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices(builder.Configuration);
 //builder.Services.AddInfrastructureServices();

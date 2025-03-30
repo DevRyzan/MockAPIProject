@@ -6,8 +6,7 @@ namespace Persistence;
 
 public static class PersistenceServiceDIs
 {
-    public static IServiceCollection AddPersistenceServices(this IServiceCollection services,
-                                                           IConfiguration configuration)
+    public static IServiceCollection AddPersistenceServices(this IServiceCollection services,IConfiguration configuration)
     {
         
         services.AddScoped<IObjectRepository,ObjectRepository>();
