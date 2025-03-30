@@ -1,14 +1,14 @@
 ﻿using Application.Features.MockAPIModels.Dtos;
-using Application.Features.MockAPIModels.Rules;
-using Application.Services.MockAPIModelService;
-using Application.Services.Repositories;
-using AutoMapper;
+using Application.Services.MockAPIModelService; 
+using AutoMapper; 
 using Domain.Models;
-using MediatR;
+using MediatR; 
 
 
-namespace Application.Features.MockAPIModels.Commands.Create;            
-
+namespace Application.Features.MockAPIModels.Commands.Create;
+/// <summary>
+/// The Handler class works directly with the Controller class, which manages Request and Response.
+/// </summary>
 public partial class CreateObjectCommand:IRequest<string>
 {
     public CreateObjectDto CreateObjectDto { get; set; }
@@ -63,9 +63,8 @@ public partial class CreateObjectCommand:IRequest<string>
 
             var mappedObject = _mapper
                 .Map<Domain
-                .Models
-                .Object>(newObject);
-
+            .Models
+                .Object>(newObject); 
             return await _mockAPIService.CreateObject(mappedObject);
 
 

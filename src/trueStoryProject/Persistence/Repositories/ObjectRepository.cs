@@ -1,4 +1,5 @@
-﻿using Application.Services.Repositories;
+﻿using Application.Features.ObjectModels.Constants;
+using Application.Services.Repositories;
 using Core.Persistence.Paging;
 using Domain;
 using Microsoft.Extensions.Options;
@@ -17,7 +18,7 @@ public class ObjectRepository : IObjectRepository
     public ObjectRepository(HttpClient client, IOptions<UrlSetting> urlSetting)
     {
         _client = client;
-        _urlSetting = urlSetting.Value ?? throw new ArgumentNullException(nameof(urlSetting), "UrlSetting cant be null.");
+        _urlSetting = urlSetting.Value ?? throw new ArgumentNullException(nameof(urlSetting), ObjectModelMessages.UrlSettingCantBeNulL);
     }
      
     public async Task<string> CreateObjectModel(Domain.Models.Object mockAPIModel)
@@ -43,9 +44,8 @@ public class ObjectRepository : IObjectRepository
         var response = await _client.DeleteAsync(requestUri);
 
         if (!response.IsSuccessStatusCode)
-        {
             throw new Exception($"API Error: {response.StatusCode}");
-        }
+        
 
         return await response.Content.ReadAsStringAsync();
     }

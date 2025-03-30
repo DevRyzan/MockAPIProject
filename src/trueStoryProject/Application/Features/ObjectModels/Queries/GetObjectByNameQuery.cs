@@ -7,7 +7,9 @@ using Core.Persistence.Paging;
 using MediatR;
 
 namespace Application.Features.ObjectModels.Queries;
-
+/// <summary>
+/// A class that works directly with the controller that controls the request and response structure for Read Functions.
+/// </summary>
 public class GetObjectByNameQuery:IRequest<ObjectListModel>
 {
     public string Name { get; set; }

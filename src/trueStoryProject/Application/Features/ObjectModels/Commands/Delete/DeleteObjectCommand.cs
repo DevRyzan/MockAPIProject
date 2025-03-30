@@ -2,7 +2,9 @@
 using MediatR;
 
 namespace Application.Features.ObjectModels.Commands.Delete;
-
+/// <summary>
+/// The Handler class works directly with the Controller class, which manages Request and Response.
+/// </summary>
 public class DeleteObjectCommand:IRequest<string>
 {
     public string ObjectId { get; set; }

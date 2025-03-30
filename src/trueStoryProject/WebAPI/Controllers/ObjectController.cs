@@ -1,32 +1,39 @@
 ﻿using Application.Features.MockAPIModels.Commands.Create;
 using Application.Features.ObjectModels.Commands.Delete;
 using Application.Features.ObjectModels.Queries;
+using Core.CrossCuttingConcerns.Exceptions;
 using Core.Application.Requests;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using ValidationProblemDetails = Core.CrossCuttingConcerns.Exceptions.ValidationProblemDetails;
 
 namespace WebAPI.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 public class ObjectController : BaseController
-{
-
+{ 
+   
     [HttpPost]
     public async Task<IActionResult> CreateObject([FromBody] CreateObjectCommand createBrandCommand)
     {
         try
-        {
-            var result = await Mediator.Send(createBrandCommand);
+        { 
+            var result = await Mediator.Send(createBrandCommand); 
             return Ok(result);
-        }
+
+        } 
         catch (ArgumentException ex)  
         {
-            return BadRequest($"Bad Request: {ex.Message}");
+            return BadRequest($"Bad Request: {ex.Message}"); 
+
         }
         catch (Exception ex)
         {
-            return StatusCode(500, $"Internal Server Error: {ex.Message}");
-        } 
+            return StatusCode(500, $"Internal Server Error: {ex.Message}"); 
+
+        }
     }
     [HttpDelete("{id}")]
     public async Task<IActionResult> RemoveObject(string id)
