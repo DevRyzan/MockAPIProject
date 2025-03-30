@@ -10,6 +10,11 @@ public class MockAPIModelBusinessRules
     {
         _mockAPIModelRepository = mockAPIModelRepository;
     }
+    //public async Task EmailCanNotBeDuplicatedWhenRegistered(string email)
+    //{
+    //    User? user = await _userRepository.GetAsync(u => u.Email == email);
+    //    if (user != null) throw new BusinessException("Mail already exists");
 
+    //}
 
 }
