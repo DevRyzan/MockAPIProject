@@ -16,6 +16,10 @@ public class ObjectController : BaseController
             string result = await Mediator.Send(createBrandCommand);
             return Ok(result);
         }
+        catch (ArgumentException ex)  
+        {
+            return BadRequest($"Bad Request: {ex.Message}");
+        }
         catch (Exception ex)
         {
             return StatusCode(500, $"Internal Server Error: {ex.Message}");

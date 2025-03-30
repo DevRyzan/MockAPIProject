@@ -14,28 +14,59 @@ public partial class CreateObjectCommand:IRequest<string>
     public CreateObjectDto CreateObjectDto { get; set; }
 
 
-    public class CreateMockAPIModelCommandHandler : IRequestHandler<CreateObjectCommand, string>
+    public class CreateObjectCommandHandler : IRequestHandler<CreateObjectCommand, string>
     {
         private readonly IObjectService _mockAPIService;
         private readonly IMapper _mapper;
-        private readonly ObjectBusinessRules _brandBusinessRules;
 
-        public CreateMockAPIModelCommandHandler(IObjectRepository mockAPIModelRepository,IObjectService 
-            mockAPIService,IMapper mapper,ObjectBusinessRules mockAPIModelBusinessRules)
+        public CreateObjectCommandHandler(IObjectService 
+            mockAPIService,IMapper mapper )
         {
             _mockAPIService = mockAPIService;
             _mapper = mapper;
-            _brandBusinessRules = mockAPIModelBusinessRules;
         }
 
         public async Task<string> Handle(CreateObjectCommand request, CancellationToken cancellationToken)
         {
-            Domain.Models.Object newMockAPIModel = new()
+            Data newData = new()
             {
-                Name = request.CreateObjectDto.Name
+                Year = request
+                .CreateObjectDto
+                .CreateDataDto
+                .Year,
+                
+                Price = request
+                .CreateObjectDto
+                .CreateDataDto
+                .Price,
+
+                CpuModel = request
+                .CreateObjectDto
+                .CreateDataDto
+                .CpuModel,
+
+                HardDiskSize = request
+                .CreateObjectDto
+                .CreateDataDto
+                .HardDiskSize,
             };
 
-            return await _mockAPIService.CreateObject(newMockAPIModel);
+
+            Domain.Models.Object newObject = new()
+            {
+                Name = request
+                .CreateObjectDto
+                .Name,
+
+                Data = newData
+            };
+
+            var mappedObject = _mapper
+                .Map<Domain
+                .Models
+                .Object>(newObject);
+
+            return await _mockAPIService.CreateObject(mappedObject);
 
 
         }
