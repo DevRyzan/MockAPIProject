@@ -26,4 +26,16 @@ public class ObjectManager : IObjectService
             throw new Exception("Error occurred while creating object.", ex);
         }
     }
+    public async Task<string> DeleteObject(string objectId)
+    {
+        try
+        {
+            var deletedObject = await _mockAPIModelRepository.DeleteObjectModel(objectId);
+            return deletedObject;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error occurred while deleting object.", ex);
+        }
+    }
 }

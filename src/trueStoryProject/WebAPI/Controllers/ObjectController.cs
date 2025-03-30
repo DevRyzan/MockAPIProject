@@ -1,4 +1,5 @@
 ﻿using Application.Features.MockAPIModels.Commands.Create;
+using Application.Features.ObjectModels.Commands.Delete;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -13,7 +14,7 @@ public class ObjectController : BaseController
     {
         try
         {
-            string result = await Mediator.Send(createBrandCommand);
+            var result = await Mediator.Send(createBrandCommand);
             return Ok(result);
         }
         catch (ArgumentException ex)  
@@ -25,4 +26,28 @@ public class ObjectController : BaseController
             return StatusCode(500, $"Internal Server Error: {ex.Message}");
         } 
     }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> RemoveObject(string id)
+    {
+        try
+        {
+            var result = await Mediator.Send(new DeleteObjectCommand(id));
+
+            if (result == null)
+            {
+                return NotFound($"Object with ID {id} not found.");
+            }
+
+            return Ok($"Object with ID {id} successfully removed.");
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest($"Bad Request: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal Server Error: {ex.Message}");
+        }
+    }
+
 }
