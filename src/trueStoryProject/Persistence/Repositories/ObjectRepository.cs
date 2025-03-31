@@ -50,17 +50,18 @@ public class ObjectRepository : IObjectRepository
         return await response.Content.ReadAsStringAsync();
     }
 
-    public async Task<IPaginate<Domain.Models.Object>> GetListAsync(
+    //Merge this repo and GetAllObject repo
+    public async Task<IPaginate<Domain.Models.Object>> GetObjectByNameAsync(
     string? nameFilter = null,
     int index = 0,
     int size = 10,
     CancellationToken cancellationToken = default)
     {
-        var requestUri = $"{_urlSetting.BaseUrl}objects?name={nameFilter}&page={index}&pageSize={size}";
+        var requestUri = $"{_urlSetting.BaseUrl}objects?page={index}&pageSize={size}";
 
         if (!string.IsNullOrEmpty(nameFilter))
         {
-            requestUri += $"&name={Uri.EscapeDataString(nameFilter)}";
+           requestUri += $"&name={Uri.EscapeDataString(nameFilter)}";
         }
 
         var response = await _client.GetAsync(requestUri, cancellationToken);
@@ -78,6 +79,8 @@ public class ObjectRepository : IObjectRepository
             return Paginate.Empty<Domain.Models.Object>();
         }
 
+        result = filterByName(result, nameFilter);
+
         var totalCount = result.Count;
         var paginatedItems = result.Skip(index * size).Take(size).ToList();
         var totalPages = (int)Math.Ceiling((double)totalCount / size);
@@ -87,7 +90,8 @@ public class ObjectRepository : IObjectRepository
             Count = totalCount,
             Pages = totalPages
         };
-    }
+    } 
+ 
 
 
     public async Task<List<Domain.Models.Object>> GetAllObjectsAsync(CancellationToken cancellationToken = default)
@@ -136,4 +140,19 @@ public class ObjectRepository : IObjectRepository
              throw new Exception($"Error deserializing response: {ex.Message}", ex);
         }
     }
+
+
+
+    private List<Domain.Models.Object> filterByName(List<Domain.Models.Object> objects, string? nameFilter)
+    {
+        if (string.IsNullOrEmpty(nameFilter))
+        {
+            return objects;
+        }
+
+        return objects.Where(obj => obj.Name != null &&
+                                     obj.Name.Contains(nameFilter, StringComparison.OrdinalIgnoreCase)).ToList();
+    }
+
+
 }

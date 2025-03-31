@@ -15,7 +15,7 @@ namespace WebAPI.Controllers;
 public class ObjectController : BaseController
 { 
    
-    [HttpPost]
+    [HttpPost("Create")]
     public async Task<IActionResult> CreateObject([FromBody] CreateObjectCommand createBrandCommand)
     {
         try
@@ -35,7 +35,7 @@ public class ObjectController : BaseController
 
         }
     }
-    [HttpDelete("{id}")]
+    [HttpDelete("Delete{id}")]
     public async Task<IActionResult> RemoveObject(string id)
     {
         try
@@ -58,8 +58,8 @@ public class ObjectController : BaseController
             return StatusCode(500, $"Internal Server Error: {ex.Message}");
         }
     }
-    [HttpGet]
-    public async Task<IActionResult> GetObjectsByName([FromQuery] string name, [FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10)
+    [HttpGet("GetObjectByName")]
+    public async Task<IActionResult> GetObjectByName([FromQuery] string name, [FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10)
     {
         var query = new GetObjectByNameQuery
         {

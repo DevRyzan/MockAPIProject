@@ -46,14 +46,14 @@ public class ObjectManager : IObjectService
         }
     }
     public async Task<IPaginate<Domain.Models.Object>> GetObjectListAsync(
-    string? nameFilter = null,
-    int index = 0,
-    int size = 10,
-    CancellationToken cancellationToken = default)
+        string? nameFilter = null,
+        int index = 0,
+        int size = 10,
+        CancellationToken cancellationToken = default)
     {
         try
         {
-            var objectList = await _objectRepository.GetListAsync(nameFilter, index, size, cancellationToken);
+            var objectList = await _objectRepository.GetObjectByNameAsync(nameFilter, index, size, cancellationToken);
 
             //BusinessRule Call
             if (objectList == null || !objectList.Items.Any())
